@@ -36,6 +36,13 @@
 
       }
 
+      function get_coords(latA, lonA, latB, lonB) {
+        var latM = ( latA + latB ) / 2.0;
+        var lonM = ( lonA + lonB ) / 2.0;
+        return (latM, lonM);
+      }
+
+
       function eqfeed_callback(results) {
         var heatmapData = [];
         for (var i = 0; i < results.features.length; i++) {
