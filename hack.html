@@ -95,7 +95,7 @@
 
 
       function eqfeed_callback(results) {
-        var p = JSON.parse(results);
+        var p = results
 
         var heatmapData = [];
         console.log(p);
@@ -127,7 +127,7 @@
           var endDate = $('#endDate').val();
           console.log(startDate);
           console.log(endDate);
-          var getString = "/url" + "?start=" + startDate + "&end=" + endDate + "&type=" + type;
+          var getString = "/url" + "?date_start=" + startDate + "&date_end=" + endDate;
 
           $.get( getString, function( data ) {
             eqfeed_callback(data);
