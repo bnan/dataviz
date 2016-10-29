@@ -11,10 +11,10 @@ function initMap() {
 		data: [],
 		dissipating: true,
 		map: map
-	});	
+	});
 }
 
-function eqfeed_callback(results) {	
+function eqfeed_callback(results) {
 	heatmap.setMap(null);
 	if(type == 1) heatmapData = sum_type(results);
 	else if(type == 2) heatmapData = average_type(results);
@@ -59,9 +59,9 @@ function average_type(results) {
 		var weightedLoc = {
 			location: latLng,
 			weight: magnitude,
-			iteration: 1 
+			iteration: 1
 		};
-		
+
 		var idx = heatmapData.map(function(x) { return x.location; }).indexOf(latLng);
 		if(idx != -1){
 			var temp = heatmapData[idx]
@@ -93,4 +93,4 @@ document.getElementById("sum").onclick = function(){
 };
 document.getElementById("average").onclick = function(){
 	type = 2;
-}; 
+};

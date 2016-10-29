@@ -61,7 +61,7 @@ def close_db(error):
         g.sqlite_db.close()
 
 ################################################################################
-# API
+# Intersections
 ################################################################################
 
 def intersection_exists(street0, street1):
@@ -108,24 +108,32 @@ def intersection_get(city, street0, street1):
 def traffic_get_all(city, start="", end=""):
     traffic = []
 
-    r = requests.get('http://data.hackenei.citibrain.com/api/traffic/?start='+start+'&end='+end)
+    url = 'http://data.hackenei.citibrain.com/api/traffic/?start='+start+'&end='+end+'&group_by=day'
+    print(url)
+    r = requests.get(url)
+
     res = r.json()
     for x in res['results']:
         c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
         c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
-        temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
+        temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['day'] }
         traffic.append(temp)
-    
+
     while res['next']:
         r = requests.get(res['next'])
         res = r.json()
         for x in res['results']:
+            print(x)
             c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
             c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
-            temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
+            temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['day'] }
             traffic.append(temp)
 
     return traffic
+
+################################################################################
+# API Endpoints
+################################################################################
 
 @app.route('/api', methods=['GET'])
 def api():
