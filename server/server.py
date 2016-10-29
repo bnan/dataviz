@@ -103,24 +103,24 @@ def intersection_get(city, street0, street1):
     if len(results) == 0:
         cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street1, street0))
         results = cur.fetchall()
-
-    return results['lat'], results['lon']
+    print results
+    return results[0]['lat'], results[0]['lon']
 
 def traffic_get_all(city, start="", end=""):
     traffic = []
 
     r = requests.get('http://data.hackenei.citibrain.com/api/traffic/?start='+start+'&end='+end)
-    res = r.json()['results']
-    for x in res:
+    res = r.json()
+    for x in res['results']:
         c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
         c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
         temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
         traffic.append(temp)
-
+    
     while res['next']:
         r = requests.get(res['next'])
-        res = r.json()['results']
-        for x in res:
+        res = r.json()
+        for x in res['results']:
             c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
             c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
             temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
@@ -131,9 +131,9 @@ def traffic_get_all(city, start="", end=""):
 
 @app.route('/api', methods=['GET'])
 def api():
-    req = request.get_json(force=True)
-    date_start = req['date_start']
-    date_end = req['date_start']
+    #req = request.get_json(force=True)
+    date_start = request.args.get('date_start') #req['date_start']
+    date_end = request.args.get('date_end') #req['date_end']
 
     traffic = traffic_get_all('New York',date_start, date_end)
     res = {'points': traffic }
@@ -146,7 +146,7 @@ def api():
 
 @app.route('/')
 def client_index():
-    return open('../client/index.html').read()
+    return open('../hack.html').read()
 
 @app.route('/scripts/<path:path>')
 def client_scripts(path):
