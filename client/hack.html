@@ -6,7 +6,7 @@
        * element that contains the map. */
       #map {
         height: 100%;
-        
+
         position:relative;
       }
       /* Optional: Makes the sample page fill the window. */
@@ -19,8 +19,10 @@
     <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
     <link rel="stylesheet" href="http://bootswatch.com/sandstone/bootstrap.min.css" media="screen">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
     <link rel="stylesheet" type="text/css" href="styles/hack.css">
-    
+
   </head>
   <body>
     <nav class="navbar navbar-default sidebar" role="navigation">
@@ -31,14 +33,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </button>      
+      </button>
     </div>
     <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">HackENEI_2016<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-search"></span></a></li>
         <li >
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filtrar<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-calendar"></span></a>
-          <ul class="dropdown-menu forAnimate" role="menu">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown">Filtrar<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-calendar"></span></a>
+          <ul class="" role="" style="margin:0px;padding:0px;color:whitesmoke;">
             <li>
               <div class="input-group">
                 <span class="input-group-addon">Start</span>
@@ -47,21 +49,35 @@
             </li>
             <li>
               <div class="input-group">
-                <span class="input-group-addon">End</span>
+                <span class="input-group-addon" >End</span>
                 <input type="text" id="endDate" class="form-control" placeholder="YYYY-MM-DD" aria-describedby="basic-addon1">
               </div>
             </li>
+            <li>
+              <br>
+              SORT BY:<br>
+
+              <label class="radio-inline"><input type="radio" name="optradio" id="day-select">day</label>
+              <label class="radio-inline"><input type="radio" name="optradio" id="month-select">month</label>
+              <label class="radio-inline"><input type="radio" name="optradio" id="week-select">week</label>
+
+            </li>
+            <li>
+              <!--sliders HERE-->
+              Day Filtering:<br>
+              <input type="range" name="days-s" id="days-s" value="5" min="1" max="31" disabled="true">
+
+              Month Filtering:<br>
+              <input type="range" name="days-s" id="month-s" value="5" min="1" max="12" disabled="true">
+
+            </li>
+
             <li>
               <button type="button" id="filterByDate" class="btn btn-default">Go</button>
             </li>
           </ul>
         </li>
-        <li >
-          <div class="btn-group" role="group" aria-label="...">
-            <button type="button" id="sum" class="btn btn-default">Sum</button>
-            <button type="button" id="average" class="btn btn-default">Average</button>
-          </div>
-        </li>  
+
       </ul>
     </div>
   </div>
