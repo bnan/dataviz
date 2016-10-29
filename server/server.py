@@ -85,7 +85,6 @@ def intersection_get(city, street0, street1):
 
     if not intersection_exists(street0, street1):
 
-        print('cenas')
         app_id = 'zTZ7lW4XZ8JTo1mYccMi'
         app_code = 'U9s3ZGxyK9wTP3wEgldk2w'
         url = 'https://geocoder.cit.api.here.com/6.2/geocode.json?city=' + city + '&street0=' + street0 + '&street1=' + street1 + '&app_id=' + app_id + '&app_code=' + app_code + '&gen=9'
@@ -121,7 +120,6 @@ def traffic_get_all(city, start="", end=""):
         r = requests.get(res['next'])
         res = r.json()
         for x in res['results']:
-            print(x)
             c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
             c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
             temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
