@@ -19,7 +19,7 @@
     <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
     <link rel="stylesheet" href="http://bootswatch.com/sandstone/bootstrap.min.css" media="screen">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="hack.css">
+    <link rel="stylesheet" type="text/css" href="styles/hack.css">
     
   </head>
   <body>
@@ -95,10 +95,9 @@
 
 
       function eqfeed_callback(results) {
-        var p = results
+        var p = results;
 
         var heatmapData = [];
-        console.log(p);
         for (var i = 0; i < p.points.length; i++) {
           var coords = p.points[i].coordinates;
           var latLng = new google.maps.LatLng(coords[0], coords[1]);
@@ -111,9 +110,8 @@
         }
         var heatmap = new google.maps.visualization.HeatmapLayer({
           data: heatmapData,
-          dissipating: false,
-          map: map,
-          dissipating: false
+          dissipating: true,
+          map: map
         });
       }
     </script>
@@ -127,7 +125,7 @@
           var endDate = $('#endDate').val();
           console.log(startDate);
           console.log(endDate);
-          var getString = "/url" + "?date_start=" + startDate + "&date_end=" + endDate;
+          var getString = "/api" + "?date_start=" + startDate + "&date_end=" + endDate;
 
           $.get( getString, function( data ) {
             eqfeed_callback(data);

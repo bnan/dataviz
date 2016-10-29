@@ -103,7 +103,6 @@ def intersection_get(city, street0, street1):
     if len(results) == 0:
         cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street1, street0))
         results = cur.fetchall()
-    print results
     return results[0]['lat'], results[0]['lon']
 
 def traffic_get_all(city, start="", end=""):
@@ -126,7 +125,6 @@ def traffic_get_all(city, start="", end=""):
             temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
             traffic.append(temp)
 
-    print(traffic)
     return traffic
 
 @app.route('/api', methods=['GET'])
@@ -146,7 +144,7 @@ def api():
 
 @app.route('/')
 def client_index():
-    return open('../hack.html').read()
+    return open('../client/hack.html').read()
 
 @app.route('/scripts/<path:path>')
 def client_scripts(path):
