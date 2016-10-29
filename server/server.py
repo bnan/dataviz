@@ -64,23 +64,6 @@ def close_db(error):
 # API
 ################################################################################
 
-def intersection_get(street0, street1):
-    db = db_open()
-    cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street0, street1))
-    results = cur.fetchall()
-
-    if len(results) == 0:
-        cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street1, street0))
-        results = cur.fetchall()
-
-    return results
-
-def intersection_add(street0, street1, point):
-    db = db_open()
-    lat, lon = point
-    db.execute('INSERT INTO intersections (street0, street1, lat, lon) VALUES (?, ?, ?, ?)', (street0, street1, lat, lon))
-    db.commit()
-
 def intersection_exists(street0, street1):
     db = db_open()
     cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street0, street1))
@@ -91,14 +74,13 @@ def intersection_exists(street0, street1):
 
     return (len(results1) + len(results2)) > 0
 
-@app.route('/intersections', methods=['GET'])
-def api_intersections():
-    req = request.get_json(force=True)
+def intersection_add(street0, street1, point):
+    db = db_open()
+    lat, lon = point
+    db.execute('INSERT INTO intersections (street0, street1, lat, lon) VALUES (?, ?, ?, ?)', (street0, street1, lat, lon))
+    db.commit()
 
-    city = 'New York'
-    street0 = req['street0']
-    street1 = req['street1']
-
+def intersection_get(city, street0, street1):
     res = {}
 
     if not intersection_exists(street0, street1):
@@ -113,9 +95,48 @@ def api_intersections():
         position = position['Latitude'], position['Longitude']
 
         intersection_add(street0, street1, position)
-    else:
-        intersection = intersection_get(street0, street1)
-        res = {'intersection': intersection}
+
+    db = db_open()
+    cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street0, street1))
+    results = cur.fetchall()
+
+    if len(results) == 0:
+        cur = db.execute('SELECT * FROM intersections WHERE street0=? AND street1=?', (street1, street0))
+        results = cur.fetchall()
+
+    return results['lat'], results['lon']
+
+def traffic_get_all(city, start="", end=""):
+    traffic = []
+
+    r = requests.get('http://data.hackenei.citibrain.com/api/traffic/?start='+start+'&end='+end)
+    res = r.json()['results']
+    for x in res:
+        c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
+        c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
+        temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
+        traffic.append(temp)
+
+    while res['next']:
+        r = requests.get(res['next'])
+        res = r.json()['results']
+        for x in res:
+            c1 = intersection_get(city, x['roadway_name'], x['roadway_segment_start'])
+            c2 = intersection_get(city, x['roadway_name'], x['roadway_segment_end'])
+            temp = { "coordinates" : [(c1[0] + c2[0])/2.0,(c1[1] + c2[1])/2.0], "count" : x['count'], "name" : x['roadway_name'], "date" : x['timestamp'] }
+            traffic.append(temp)
+
+    print(traffic)
+    return traffic
+
+@app.route('/api', methods=['GET'])
+def api():
+    req = request.get_json(force=True)
+    date_start = req['date_start']
+    date_end = req['date_start']
+
+    traffic = traffic_get_all('New York',date_start, date_end)
+    res = {'points': traffic }
 
     return jsonify(**res)
 
